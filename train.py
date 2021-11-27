@@ -34,7 +34,7 @@ def main():
 
     args = parser.parse_args()
     args.lr = 1e-4
-    args.batch_size    = 26
+    args.batch_size    = 4
     args.decay         = 5*1e-4
     args.start_epoch   = 0
     args.epochs = 1000
@@ -48,7 +48,7 @@ def main():
 
     torch.cuda.manual_seed(args.seed)
 
-    model = CANNet()
+    model = CANNet(load_weights=False)
 
     model = model.cuda()
 
@@ -138,8 +138,8 @@ def validate(val_list, model, criterion):
 
     for i,(img, target) in enumerate(val_loader):
         h,w = img.shape[2:4]
-        h_d = h/2
-        w_d = w/2
+        h_d = h//2
+        w_d = w//2
         img_1 = Variable(img[:,:,:h_d,:w_d].cuda())
         img_2 = Variable(img[:,:,:h_d,w_d:].cuda())
         img_3 = Variable(img[:,:,h_d:,:w_d].cuda())

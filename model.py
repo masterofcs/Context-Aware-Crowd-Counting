@@ -42,8 +42,15 @@ class CANNet(nn.Module):
         if not load_weights:
             mod = models.vgg16(pretrained = True)
             self._initialize_weights()
-            for i in xrange(len(self.frontend.state_dict().items())):
-                self.frontend.state_dict().items()[i][1].data[:] = mod.state_dict().items()[i][1].data[:]
+            # print(len(self.frontend.state_dict().items()))
+            for item_mod in mod.state_dict():
+                print(item_mod)
+            for item_state in self.frontend.state_dict():
+                print(item_state)
+            #     print(self.frontend.state_dict()[item_state][1].data)
+                state_mode = mod.state_dict()
+            
+                self.frontend.state_dict()[item_state][1].data = state_mode[f'features.{item_state}'][1].data
 
     def forward(self,x):
         x = self.frontend(x)

@@ -1,0 +1,14 @@
+torch
+torchvision
+numpy
+scipy
+scikit-learn
+numpy  
+matplotlib 
+ipython 
+pandas 
+sympy 
+nose
+h5py
+Pillow
+opencv-python
