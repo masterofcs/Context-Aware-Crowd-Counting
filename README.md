@@ -39,7 +39,7 @@ Dropbox: [link](https://www.dropbox.com/s/fipgjqxl7uj8hd5/ShanghaiTech.zip?dl=0)
 In command line:
 
 ```
-python train.py train.json val.json
+python train.py train.json valid.json
 
 ``` 
 

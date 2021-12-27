@@ -18,6 +18,7 @@ class ContextualModule(nn.Module):
 
     def _make_scale(self, features, size):
         prior = nn.AdaptiveAvgPool2d(output_size=(size, size))
+        # prior = nn.AvgPool2d(size)
         conv = nn.Conv2d(features, features, kernel_size=1, bias=False)
         return nn.Sequential(prior, conv)
 
@@ -42,21 +43,18 @@ class CANNet(nn.Module):
         if not load_weights:
             mod = models.vgg16(pretrained = True)
             self._initialize_weights()
-            # print(len(self.frontend.state_dict().items()))
-            for item_mod in mod.state_dict():
-                print(item_mod)
             for item_state in self.frontend.state_dict():
-                print(item_state)
-            #     print(self.frontend.state_dict()[item_state][1].data)
                 state_mode = mod.state_dict()
-            
                 self.frontend.state_dict()[item_state][1].data = state_mode[f'features.{item_state}'][1].data
 
     def forward(self,x):
+        # print("input: ", x.shape)
         x = self.frontend(x)
         x = self.context(x)
         x = self.backend(x)
+        # print("Density: ", x.shape)
         x = self.output_layer(x)
+        # print("output: ", x.shape)
         return x
 
     def _initialize_weights(self):
@@ -85,4 +83,5 @@ def make_layers(cfg, in_channels = 3,batch_norm=False,dilation = False):
             else:
                 layers += [conv2d, nn.ReLU(inplace=True)]
             in_channels = v
+    # print("layers: ", layers)
     return nn.Sequential(*layers)

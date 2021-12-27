@@ -34,11 +34,11 @@ def main():
 
     args = parser.parse_args()
     args.lr = 1e-4
-    args.batch_size    = 4
+    args.batch_size    = 8
     args.decay         = 5*1e-4
     args.start_epoch   = 0
     args.epochs = 1000
-    args.workers = 4
+    args.workers = 1
     args.seed = int(time.time())
     args.print_freq = 4
     with open(args.train_json, 'r') as outfile:
@@ -50,9 +50,9 @@ def main():
 
     model = CANNet(load_weights=False)
 
-    model = model.cuda()
+    # model = model
 
-    criterion = nn.MSELoss(size_average=False).cuda()
+    criterion = nn.MSELoss(size_average=False)
 
     optimizer = torch.optim.Adam(model.parameters(), args.lr,
                                     weight_decay=args.decay)
@@ -95,11 +95,11 @@ def train(train_list, model, criterion, optimizer, epoch):
     for i,(img, target)in enumerate(train_loader):
         data_time.update(time.time() - end)
 
-        img = img.cuda()
+        # img = img.cuda()
         img = Variable(img)
         output = model(img)[:,0,:,:]
 
-        target = target.type(torch.FloatTensor).cuda()
+        target = target.type(torch.FloatTensor)
         target = Variable(target)
 
         loss = criterion(output, target)
@@ -140,10 +140,10 @@ def validate(val_list, model, criterion):
         h,w = img.shape[2:4]
         h_d = h//2
         w_d = w//2
-        img_1 = Variable(img[:,:,:h_d,:w_d].cuda())
-        img_2 = Variable(img[:,:,:h_d,w_d:].cuda())
-        img_3 = Variable(img[:,:,h_d:,:w_d].cuda())
-        img_4 = Variable(img[:,:,h_d:,w_d:].cuda())
+        img_1 = Variable(img[:,:,:h_d,:w_d])
+        img_2 = Variable(img[:,:,:h_d,w_d:])
+        img_3 = Variable(img[:,:,h_d:,:w_d])
+        img_4 = Variable(img[:,:,h_d:,w_d:])
         density_1 = model(img_1).data.cpu().numpy()
         density_2 = model(img_2).data.cpu().numpy()
         density_3 = model(img_3).data.cpu().numpy()
